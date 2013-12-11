@@ -1,0 +1,25 @@
+html
+  head
+    title דירות
+    link href="/stylesheets/list.css" media="all" rel="stylesheet" type="text/css"
+  body
+    .last_updated
+      | עודכן לאחרונה ב
+      = Time.now
+    .link
+      | קישור:
+      = @url
+    ul.appartments
+    - @apartments.each do |a|
+      li.appartment
+        h3 = a.title
+        ul.details
+          li
+            a(href=a.link) קישור
+          li = "מחיר #{a.price}"
+          li = "#{a.room_count} חדרים"
+          li = "כניסה #{a.entry_date}"
+          li = "קומה #{a.floor}"
+          li = a.yad2_id
+
+
