@@ -7,10 +7,11 @@ html
       | עודכן לאחרונה ב
       = Time.now
     .link
-      | קישור:
-      = @url
+      | שאילתה:
+      br
+      = @query
     ul.appartments
-    - @apartments.each do |a|
+    - @query.apartments.each do |a|
       li.appartment
         h3 = a.title
         ul.details
@@ -20,6 +21,7 @@ html
           li = "#{a.room_count} חדרים"
           li = "כניסה #{a.entry_date}"
           li = "קומה #{a.floor}"
+          li = "עודכן לאחרונה ב #{a.updated_at}"
           li = a.yad2_id
 
 

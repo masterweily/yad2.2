@@ -37,13 +37,15 @@ class Scraper
 
   def build_appartment(cells)
     link = "http://www.yad2.co.il/Nadlan/" + cells[24].all("a").last['href'].to_s
-    Apartment.new yad2_id:    CGI::parse(link).values.first.first,
-                  title:      cells[8].text,
-                  price:      cells[10].text,
-                  room_count: cells[12].text,
-                  entry_date: cells[14].text,
-                  floor:      cells[16].text,
-                  link:       link
+    {
+      yad2_id:    CGI::parse(link).values.first.first,
+      title:      cells[8].text,
+      price:      cells[10].text,
+      room_count: cells[12].text,
+      entry_date: cells[14].text,
+      floor:      cells[16].text,
+      link:       link,
+    }
   end
 
   def url

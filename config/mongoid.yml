@@ -1,0 +1,8 @@
+development:
+  sessions:
+    default:
+      database: yad2_spy
+      hosts:
+        - localhost:27017
+      options:
+        consistency: strong
