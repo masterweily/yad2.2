@@ -28,9 +28,27 @@ get '/sounds/:filename' do
 end
 
 get "/yad2/rent" do
-  get_list
+  query = Query.fetch request.params
+  redirect "/yad2/rent/query/#{query.id}"
 end
 
+get "/yad2/rent/query/:query_id" do
+  @query = Query.find_by id: params[:query_id]
+  slim :list
+end
+
+# json API
+post "/query/:id/update" do
+  content_type :json
+  { success: Query.find_by(id: params[:id]).update_attributes(params[:query]) }.to_json
+end
+
+post '/yad2/query/:query_id/apartment/:apartment_id/archive' do
+  content_type :json
+  query = Query.find_by(id: params[:query_id])
+  apartment = query.apartments.find_by(id: params[:apartment_id])
+  { success: apartment.archive! }.to_json
+end
 
 get "/yad2/crawl/:query_id" do
   if request.websocket?
@@ -68,10 +86,7 @@ def crawler(query)
   Crawler.instance_for(query)
 end
 
-def get_list
-  @query = Query.fetch request.params
-  slim :list
-end
+
 
 
 

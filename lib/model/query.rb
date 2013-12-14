@@ -1,14 +1,17 @@
 class Query
   include Mongoid::Document
+  include Mongoid::Timestamps
 
-  field :to_s, type: String
+  field :name, type: String
+  field :url, type: String
+
   embeds_many :apartments
 
-  validates :to_s, uniqueness: true, presence: true, allow_nil: false
+  validates :url, uniqueness: true, presence: true, allow_nil: false
 
-  def self.fetch params
-    to_s = params.is_a?(Hash) ? create_url(params) : params.to_s
-    find_or_create_by to_s: to_s
+  def self.fetch arg
+    url = arg.is_a?(Hash) ? create_url(arg) : arg.to_s
+    find_or_create_by url: url
   end
 
   def self.create_url(params)
@@ -37,5 +40,5 @@ class Query
   end
 
   index "apartments.yad2_id" => 1
-  index({ to_s: 1 }, { unique: true, name: "to_s_index" })
+  index({ url: 1 }, { unique: true, name: "url_index" })
 end

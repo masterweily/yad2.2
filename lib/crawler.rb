@@ -10,8 +10,8 @@ class Crawler
     @thread = Thread.new do
       loop do
         puts 'loop'
-        visit &after_visit
-        sleep(5.seconds)
+        # visit &after_visit
+        sleep(40.seconds)
       end
     end
   end

@@ -10,11 +10,16 @@ buildWebsoket = (path,options) ->
     options.onmessage(data)
   ws
 
-$ ->
-  $apartments_list = $('.apartments')
+initApartmentItem = ($item) ->
+  $item.find('a.archive').click (e) ->
+    e.preventDefault()
+    $a = $(this)
+    url = $a.attr('href')
+    $.post url, -> $item.fadeOut('slow',-> $(this).remove())
+  return $item
 
-  apartment_$li = (apartment) ->
-    $ """
+apartment_$li = (apartment) ->
+    initApartmentItem $("""
       <li class="new apartment">
         <h3>#{apartment.title}</h3>
         <ul class="details">
@@ -25,15 +30,19 @@ $ ->
           <li>#{apartment.rooms} חדרים</li>
           <li>כניסה #{apartment.entry_date}</li>
           <li>קומה #{apartment.floor}</li>
-          <li>עודכן לאחרונה ב #{apartment.last_update}</li>
+          <li>עודכן לאחרונה ב #{apartment.last_updated}</li>
         </ul>
       </li>
-    """
+    """)
 
-  notify_audio = new Audio()
-  notify_audio.src = '/sounds/hihat.wav'
-  notify_audio.load()
-  notify = -> notify_audio.play()
+notify_audio = new Audio()
+notify_audio.src = '/sounds/hihat.wav'
+notify_audio.load()
+notify = -> notify_audio.play()
+
+$ ->
+  $apartments_list = $('.apartments')
+  $apartments_list.find('.apartment').each -> initApartmentItem $(this)
 
   queryId = $('.query').attr('data-id')
   socket = buildWebsoket "/yad2/crawl/#{queryId}",
@@ -44,6 +53,19 @@ $ ->
       for apartment in data
         $apartments_list.prepend(apartment_$li(apartment).fadeIn('slow'))
 
+  $('input[name="query[name]"]').change ->
+    data =
+      query:
+        name: $(this).val()
+    url = $(this).attr('data-url')
+    $.post url,data
+
+  $('input[name="new-query"]').change ->
+    value = $(this).val()
+    if value.length > 0
+      newTab "#{$(this).attr('data-url')}?#{value}"
+
+  newTab = (url) -> window.open(url, '_blank').focus()
 
 
 
