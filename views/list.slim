@@ -2,7 +2,9 @@ html
   head
     title = @query.name.present? ? @query.name : 'דירות'
     link href="/stylesheets/list.css" media="all" rel="stylesheet" type="text/css"
+    link href="/stylesheets/jq.te.css" media="all" rel="stylesheet" type="text/css"
     script src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
+    script src='/javascripts/te.jq.js'
     script src='/javascripts/list.js'
   body
     .query(data-id=@query.id)
@@ -39,9 +41,9 @@ html
             li = "קומה #{a.floor}"
             li = "עודכן לאחרונה ב #{a.updated_at}"
             li
-              textarea.notes(placeholder='הערות' value=a.notes name='apartment[notes]')
-            li
               a.archive(href='/yad2/query/#{@query.id}/apartment/#{a.id}/archive') תעיף לי מהעיניים
+            - puts a.notes
+            textarea.notes(placeholder='הערות' name='apartment[notes]' data-url='/yad2/query/#{@query.id}/apartment/#{a.id}/update')=a.notes
         - a.seen!
 
 

@@ -50,6 +50,13 @@ post '/yad2/query/:query_id/apartment/:apartment_id/archive' do
   { success: apartment.archive! }.to_json
 end
 
+post '/yad2/query/:query_id/apartment/:apartment_id/update' do
+  content_type :json
+  query = Query.find_by(id: params[:query_id])
+  apartment = query.apartments.find_by(id: params[:apartment_id])
+  { success: apartment.update_attributes(params[:apartment]), apartment: apartment }.to_json
+end
+
 get "/yad2/crawl/:query_id" do
   if request.websocket?
     query = Query.find_by id: params[:query_id]

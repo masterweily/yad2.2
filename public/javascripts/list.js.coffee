@@ -16,6 +16,24 @@ initApartmentItem = ($item) ->
     $a = $(this)
     url = $a.attr('href')
     $.post url, -> $item.fadeOut('slow',-> $(this).remove())
+
+  $item.find('textarea.notes').each ->
+    $this = $(this)
+    url = $this.attr('data-url')
+    save = ->
+      data =
+        apartment:
+          notes: $this.val()
+      $.post url,data
+
+    $this.focus ->
+      unless $this.editor
+        $this.jqte
+          change: -> save()
+          blur: -> save()
+      $this.editor = true
+
+
   return $item
 
 apartment_$li = (apartment) ->
