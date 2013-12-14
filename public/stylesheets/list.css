@@ -1,3 +1,7 @@
 body {
   direction: rtl;
 }
+
+.apartment.new {
+  background-color: yellow;
+}

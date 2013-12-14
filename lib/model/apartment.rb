@@ -9,9 +9,22 @@ class Apartment
   field :floor, type: String
   field :link, type: String
   field :price, type: String
+  field :last_seen, type: Time, default: 1.second.ago
 
   embedded_in :query
 
   validates :yad2_id, uniqueness: true
+
+  def new?
+    created_at > last_seen
+  end
+
+  def updated?
+    updated_at > last_seen
+  end
+
+  def seen!
+    update_attribute :last_seen, Time.now
+  end
 
 end

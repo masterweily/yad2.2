@@ -1,8 +1,13 @@
 class Scraper
 
-  def initialize(ad_type,params)
-    @ad_type = ad_type
-    @params = params
+  def initialize(query)
+    @query = query
+  end
+
+  attr_reader :query
+
+  def url
+    @query.url
   end
 
   Capybara.register_driver :poltergeist do |app|
@@ -25,13 +30,33 @@ class Scraper
   end
 
 
-  def load_apartments
-    Capybara.visit url
-    table = Capybara.page.find '#main_table'
-    trs = table.all "tr[class^='ActiveLink']"
-    trs.map do |tr|
-      cells = tr.all "td"
-      build_appartment(cells)
+  def get_new_apartments
+    apartments = if @query.fake?
+      build_fake_apartments
+    else
+      Capybara.visit url
+      table = Capybara.page.find '#main_table'
+      trs = table.all "tr[class^='ActiveLink']"
+      trs.map do |tr|
+        cells = tr.all "td"
+        build_appartment(cells)
+      end
+    end
+    @query.sync apartments
+    @query.new_apartments
+  end
+
+  def build_fake_apartments
+    rand(0..3).times.map do
+      {
+        yad2_id:    rand(0xfffffffffffffffffffffffffffffffffff).to_s(16),
+        title:      ['תל אביב','חולון','באר שבע'].sample + ' - לא באמת',
+        price:      "#{rand(2..4)},#{rand(10..95)}0 ₪",
+        room_count: "#{rand(1..4)}",
+        entry_date: "#{[rand(1..30).days.from_now.strftime('%F'),'מיידית'].sample}",
+        floor:      "#{[rand(1..4),'קרקע'].sample}",
+        link:       'http://www.yad2.co.il?fake=true',
+      }
     end
   end
 
@@ -47,20 +72,5 @@ class Scraper
       link:       link,
     }
   end
-
-  def url
-    @url ||= create_url
-  end
-
-  def create_url
-    uri = Addressable::URI.new
-    uri.host = 'www.yad2.co.il'
-    uri.path = "/Nadlan/#{@ad_type}.php"
-    uri.scheme = 'http'
-    uri.query_values = @params
-    url = uri.to_s
-    url
-  end
-
 
 end

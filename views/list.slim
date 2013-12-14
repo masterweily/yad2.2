@@ -2,26 +2,30 @@ html
   head
     title דירות
     link href="/stylesheets/list.css" media="all" rel="stylesheet" type="text/css"
+    script src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
+    script src='/javascripts/list.js'
   body
-    .last_updated
-      | עודכן לאחרונה ב
-      = Time.now
-    .link
-      | שאילתה:
-      br
-      = @query
-    ul.appartments
-    - @query.apartments.each do |a|
-      li.appartment
-        h3 = a.title
-        ul.details
-          li
-            a(href=a.link) קישור
-          li = "מחיר #{a.price}"
-          li = "#{a.room_count} חדרים"
-          li = "כניסה #{a.entry_date}"
-          li = "קומה #{a.floor}"
-          li = "עודכן לאחרונה ב #{a.updated_at}"
-          li = a.yad2_id
+    .query(data-id=@query.id)
+      .last_updated
+        | עודכן לאחרונה ב
+        = Time.now
+      .url
+        | שאילתה:
+        br
+        = @query
+    ul.apartments
+      - @query.apartments.order_by(:updated_at.desc).each do |a|
+        li class=("apartment#{' new' if a.new?}")
+          h3 = a.title
+          ul.details
+            li
+              a(href=a.link) קישור
+            li = "מחיר #{a.price}"
+            li = "#{a.room_count} חדרים"
+            li = "כניסה #{a.entry_date}"
+            li = "קומה #{a.floor}"
+            li = "עודכן לאחרונה ב #{a.updated_at}"
+        - a.seen!
+
 
 

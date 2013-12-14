@@ -13,3 +13,6 @@ gem 'sinatra-contrib'
 gem 'slim'
 gem 'mongoid','3.1.5'
 gem 'bson_ext'
+gem 'sinatra-websocket'
+gem 'coffee-script'
+
