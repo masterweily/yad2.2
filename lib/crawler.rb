@@ -6,27 +6,22 @@ class Crawler
   end
 
   def start &after_visit
-    puts 'start'
     @thread = Thread.new do
       loop do
-        puts 'loop'
-        # visit &after_visit
-        sleep(40.seconds)
+        visit &after_visit
+        sleep( (25 + rand(-15..15)).minutes + rand(0..59).seconds )
       end
     end
   end
 
   def stop
-    puts 'stop'
     @thread.kill
   end
 
   def visit &after_visit
-    puts 'visit'
     apartments = @scraper.get_new_apartments
-    puts apartments
+    puts "found #{apartments.count} new apartments: #{apartments.map(&:id).join(' | ')}"
     after_visit.call(apartments) if block_given?
-    puts 'after after_visit'
   end
 
   def self.instance_for(query)

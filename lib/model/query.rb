@@ -36,7 +36,7 @@ class Query
   end
 
   def fake?
-    true # todo
+    /fake=true/ === url
   end
 
   index "apartments.yad2_id" => 1

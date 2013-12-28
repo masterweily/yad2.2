@@ -36,19 +36,26 @@ initApartmentItem = ($item) ->
 
   return $item
 
+queryId= ""
 apartment_$li = (apartment) ->
     initApartmentItem $("""
       <li class="new apartment">
         <h3>#{apartment.title}</h3>
         <ul class="details">
           <li>
-            <a href="#{apartment.link}.">קישור</a>
+            <a href="#{apartment.link}" target="_blank">קישור</a>
           </li>
           <li>מחיר #{apartment.price}</li>
           <li>#{apartment.rooms} חדרים</li>
           <li>כניסה #{apartment.entry_date}</li>
           <li>קומה #{apartment.floor}</li>
-          <li>עודכן לאחרונה ב #{apartment.last_updated}</li>
+          <li>עודכן לאחרונה ב #{apartment.updated_at}</li>
+          <li>
+            <a class="archive" href="/yad2/query/#{queryId}/apartment/#{apartment._id}/archive">תעיף לי מהעיניים</a>
+          </li>
+          <textarea class="notes" data-url="/yad2/query/#{queryId}/apartment/#{apartment._id}/update" name="apartment[notes]" placeholder="הערות">
+            #{apartment.notes}
+          </textarea>
         </ul>
       </li>
     """)
@@ -72,9 +79,11 @@ $ ->
         $apartments_list.prepend(apartment_$li(apartment).fadeIn('slow'))
 
   $('input[name="query[name]"]').change ->
+    val = $(this).val()
+    $('title').html(val)
     data =
       query:
-        name: $(this).val()
+        name: val
     url = $(this).attr('data-url')
     $.post url,data
 

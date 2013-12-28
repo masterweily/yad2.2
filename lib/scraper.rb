@@ -34,6 +34,7 @@ class Scraper
     apartments = if @query.fake?
       build_fake_apartments
     else
+      puts "visit: #{url}"
       Capybara.visit url
       table = Capybara.page.find '#main_table'
       trs = table.all "tr[class^='ActiveLink']"
@@ -52,10 +53,10 @@ class Scraper
         yad2_id:    rand(0xfffffffffffffffffffffffffffffffffff).to_s(16),
         title:      ['תל אביב','חולון','באר שבע'].sample + ' - לא באמת',
         price:      "#{rand(2..4)},#{rand(10..95)}0 ₪",
-        room_count: "#{rand(1..4)}",
+        rooms: "#{rand(1..4)}",
         entry_date: "#{[rand(1..30).days.from_now.strftime('%F'),'מיידית'].sample}",
         floor:      "#{[rand(1..4),'קרקע'].sample}",
-        link:       'http://www.yad2.co.il?fake=true',
+        link:       'http://www.yad2.co.il/Nadlan/rent_info.php?NadlanID=16f7fdfa95cb606d5e088d311ff5bf269c4',
       }
     end
   end
@@ -66,7 +67,7 @@ class Scraper
       yad2_id:    CGI::parse(link).values.first.first,
       title:      cells[8].text,
       price:      cells[10].text,
-      room_count: cells[12].text,
+      rooms:      cells[12].text,
       entry_date: cells[14].text,
       floor:      cells[16].text,
       link:       link,

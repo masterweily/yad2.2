@@ -11,7 +11,7 @@ class Apartment
   field :price, type: String
   field :last_seen, type: Time, default: 1.second.ago
   field :archived, type: Boolean, default: false
-  field :notes, type: String
+  field :notes, type: String, default: ''
 
   embedded_in :query
 

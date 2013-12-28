@@ -36,13 +36,12 @@ html
             li
               a(href=a.link target='_blank') קישור
             li = "מחיר #{a.price}"
-            li = "#{a.room_count} חדרים"
+            li = "#{a.rooms} חדרים"
             li = "כניסה #{a.entry_date}"
             li = "קומה #{a.floor}"
             li = "עודכן לאחרונה ב #{a.updated_at}"
             li
               a.archive(href='/yad2/query/#{@query.id}/apartment/#{a.id}/archive') תעיף לי מהעיניים
-            - puts a.notes
             textarea.notes(placeholder='הערות' name='apartment[notes]' data-url='/yad2/query/#{@query.id}/apartment/#{a.id}/update')=a.notes
         - a.seen!
 

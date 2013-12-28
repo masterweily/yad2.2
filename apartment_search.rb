@@ -71,6 +71,7 @@ private
 def init_crawler_socket(query)
   request.websocket do |ws|
     ws.onopen do
+      puts 'socket opened'
       ws.send({json: :data}.to_json)
       crawler(query).start do |new_apartments|
         ws.send(new_apartments.to_json)
@@ -82,7 +83,7 @@ def init_crawler_socket(query)
       # EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
     end
     ws.onclose do
-      warn("wetbsocket closed")
+      warn("socket closed")
       crawler(query).stop
       settings.sockets[:crawlers].delete(ws)
     end
