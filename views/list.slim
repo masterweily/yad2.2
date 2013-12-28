@@ -1,49 +1,49 @@
 html
   head
-    title = @query.name.present? ? @query.name : 'דירות'
+    title = @query && @query.name.present? ? @query.name : 'דירות'
     link href="/stylesheets/list.css" media="all" rel="stylesheet" type="text/css"
     link href="/stylesheets/jq.te.css" media="all" rel="stylesheet" type="text/css"
     script src='//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
     script src='/javascripts/te.jq.js'
     script src='/javascripts/list.js'
+
   body
-    .query(data-id=@query.id)
-      .name
-        input type='text' value=@query.name name='query[name]' placeholder='שם השאילתה' data-url="/query/#{@query.id}/update"
-      .url
-        = @query.url
-      br
-      .last_updated
-        | עודכן לאחרונה ב
-        = @query.updated_at
-      br
-      .other-queries
-        | שאילתות נוספות
-        ul
-          - Query.all.each do |q|
-            - unless q == @query
-                li
-                  - name = q.name.present? ? q.name : 'ללא שם'
-                  a(href="/yad2/rent/query/#{q.id}" target='_blank')=name
-      .new-query
-        .url = 'http://www.yad2.co.il/Nadlan/rent.php?'
-        input type='text' name='new-query' data-url="/yad2/rent" placeholder='שאילתת חיפוש חדשה'
-    ul.apartments
-      - @query.apartments.order_by(:updated_at.desc,:id.desc).where(archived: false).each do |a|
-        li class=("apartment#{' new' if a.new?}")
-          h3 = a.title
-          ul.details
-            li
-              a(href=a.link target='_blank') קישור
-            li = "מחיר #{a.price}"
-            li = "#{a.rooms} חדרים"
-            li = "כניסה #{a.entry_date}"
-            li = "קומה #{a.floor}"
-            li = "עודכן לאחרונה ב #{a.updated_at}"
-            li
-              a.archive(href='/yad2/query/#{@query.id}/apartment/#{a.id}/archive') תעיף לי מהעיניים
-            textarea.notes(placeholder='הערות' name='apartment[notes]' data-url='/yad2/query/#{@query.id}/apartment/#{a.id}/update')=a.notes
-        - a.seen!
-
-
-
+    - if @query
+      .query(data-id=@query.id)
+        .name
+          input type='text' value=@query.name name='query[name]' placeholder='שם השאילתה' data-url="/query/#{@query.id}/update"
+        .url
+          = @query.url
+        br
+        .last_updated
+          | עודכן לאחרונה ב
+          = @query.updated_at
+        br
+    .other-queries
+      | שאילתות נוספות
+      ul
+        - Query.all.each do |q|
+          - unless q == @query
+              li
+                - name = q.name.present? ? q.name : 'ללא שם'
+                a(href="/yad2/rent/query/#{q.id}" target='_blank')=name
+    .new-query
+      .url = 'http://www.yad2.co.il/Nadlan/rent.php?'
+      input type='text' name='new-query' data-url="/yad2/rent" placeholder='שאילתת חיפוש חדשה'
+    - if @query
+      ul.apartments
+        - @query.apartments.order_by(:updated_at.desc,:id.desc).where(archived: false).each do |a|
+          li class=("apartment#{' new' if a.new?}")
+            h3 = a.title
+            ul.details
+              li
+                a(href=a.link target='_blank') קישור
+              li = "מחיר #{a.price}"
+              li = "#{a.rooms} חדרים"
+              li = "כניסה #{a.entry_date}"
+              li = "קומה #{a.floor}"
+              li = "עודכן לאחרונה ב #{a.updated_at}"
+              li
+                a.archive(href='/yad2/query/#{@query.id}/apartment/#{a.id}/archive') תעיף לי מהעיניים
+              textarea.notes(placeholder='הערות' name='apartment[notes]' data-url='/yad2/query/#{@query.id}/apartment/#{a.id}/update')=a.notes
+          - a.seen!

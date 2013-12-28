@@ -19,12 +19,20 @@ require './lib/model'
 
 set :sockets, { crawlers: [] }
 
+# --- assets
+
 get '/javascripts/:filename' do
   coffee "../public/javascripts/#{params[:filename]}".to_sym
 end
 
 get '/sounds/:filename' do
   run Rack::File.new("./public/sounds/#{params[:filename]}")
+end
+
+# --- pages
+
+get '/' do
+  slim :list
 end
 
 get "/yad2/rent" do
@@ -37,7 +45,8 @@ get "/yad2/rent/query/:query_id" do
   slim :list
 end
 
-# json API
+# --- json api
+
 post "/query/:id/update" do
   content_type :json
   { success: Query.find_by(id: params[:id]).update_attributes(params[:query]) }.to_json
@@ -56,6 +65,8 @@ post '/yad2/query/:query_id/apartment/:apartment_id/update' do
   apartment = query.apartments.find_by(id: params[:apartment_id])
   { success: apartment.update_attributes(params[:apartment]), apartment: apartment }.to_json
 end
+
+# --- Websockets
 
 get "/yad2/crawl/:query_id" do
   if request.websocket?
